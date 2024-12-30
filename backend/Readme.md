@@ -1,26 +1,24 @@
-# User Registration API
+# User Management API
 
 ## Overview
-This API allows users to register by providing their details. It creates a new user in the database and returns a JSON Web Token (JWT) for authentication.
+This API provides endpoints for user registration, login, and profile management. It utilizes JSON Web Tokens (JWT) for authentication and ensures secure password storage through hashing.
 
-## API Endpoint
+## Endpoints
 
-### Register User
+### User Registration
 - **URL:** `/api/user/register`
 - **Method:** `POST`
 - **Authentication:** None required for registration.
 
 #### Description
-The `/api/user/register` endpoint is used to create a new user account. Users must provide their first name, last name (optional), email, and password. Upon successful registration, the API will return a JWT that can be used for authenticating future requests.
+Registers a new user by creating a user account in the database and issuing a JWT for authentication.
 
-## Request Format
+#### Request Format
 
 ### Headers
 - `Content-Type: application/json`
 
 ### Body
-The request body must be a JSON object containing the following fields:
-
 ```json
 {
     "fullname": {
@@ -38,7 +36,7 @@ The request body must be a JSON object containing the following fields:
 - `email` (String): The email address of the user (required, must be unique and valid).
 - `password` (String): The password for the user account (required).
 
-## Example Response
+#### Response
 
 ### Success Response
 - **Status Code:** `201 Created`
@@ -69,24 +67,21 @@ The request body must be a JSON object containing the following fields:
 {
     "error": "Missing Field Firstname"
 }
-```
 
-## Login User
+### User Login
 - **URL:** `/api/user/login`
 - **Method:** `POST`
 - **Authentication:** None required for login.
 
 #### Description
-The `/api/user/login` endpoint is used to authenticate an existing user. Users must provide their email and password. Upon successful login, the API will return a JWT that can be used for authenticating future requests.
+Authenticates an existing user by verifying their email and password, issuing a JWT for future requests.
 
-### Request Format
+#### Request Format
 
 ### Headers
 - `Content-Type: application/json`
 
 ### Body
-The request body must be a JSON object containing the following fields:
-
 ```json
 {
     "email": "john.doe@example.com",
@@ -98,7 +93,7 @@ The request body must be a JSON object containing the following fields:
 - `email` (String): The email address of the user (required).
 - `password` (String): The password for the user account (required).
 
-## Example Response
+#### Response
 
 ### Success Response
 - **Status Code:** `200 OK`
@@ -129,8 +124,58 @@ The request body must be a JSON object containing the following fields:
 {
     "error": "Either Email or password is missing"
 }
+
+### User Profile
+- **URL:** `/api/user/profile`
+- **Method:** `GET`
+- **Authentication:** Bearer token required.
+
+#### Description
+Retrieves the profile information of the currently logged-in user.
+
+#### Request Format
+
+### Headers
+- `Content-Type: application/json`
+- `Authorization: Bearer yourJWTtoken`
+
+#### Response
+
+### Success Response
+- **Status Code:** `200 OK`
+- **Response Body:**
+```json
+{
+    "success": true,
+    "user": {
+        "_id": "userId",
+        "fullname": {
+            "firstname": "John",
+            "lastname": "Doe"
+        },
+        "email": "john.doe@example.com",
+        "socketId": null,
+        "createdAt": "2023-10-01T00:00:00.000Z",
+        "updatedAt": "2023-10-01T00:00:00.000Z",
+        "__v": 0
+    }
+}
 ```
 
-## Notes
-- Ensure that the email provided is unique; otherwise, the registration will fail.
-- Passwords are hashed before being stored in the database for security.
+### Error Response
+- **Status Code:** `401 Unauthorized` (if the user is not logged in)
+- **Response Body:**
+```json
+{
+    "success": false,
+    "error": "No user is currently logged in"
+}
+```
+- **Status Code:** `404 Not Found` (if the user is invalid)
+- **Response Body:**
+```json
+{
+    "success": false,
+    "error": "Invalid user"
+}
+```
