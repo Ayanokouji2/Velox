@@ -42,3 +42,20 @@ export const login = async (email, password) => {
         throw new Error(`${error.message} : this error occured while user loggin`)
     }
 }
+
+export const getUser = async (_id) => {
+    try {
+        if(!_id)
+            throw new Error(`No user_id found to Get User details`)
+
+        const user = await UserModel.findById(_id)
+
+        if(!user)
+            throw new Error(`No user found with this user_id`)
+
+        return user;
+
+    } catch (error) {
+        throw new Error(`${error.message} : this error occured while fetching user details`)
+    }
+}
