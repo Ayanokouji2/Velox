@@ -71,6 +71,66 @@ The request body must be a JSON object containing the following fields:
 }
 ```
 
+## Login User
+- **URL:** `/api/user/login`
+- **Method:** `POST`
+- **Authentication:** None required for login.
+
+#### Description
+The `/api/user/login` endpoint is used to authenticate an existing user. Users must provide their email and password. Upon successful login, the API will return a JWT that can be used for authenticating future requests.
+
+### Request Format
+
+### Headers
+- `Content-Type: application/json`
+
+### Body
+The request body must be a JSON object containing the following fields:
+
+```json
+{
+    "email": "john.doe@example.com",
+    "password": "yourSecurePassword"
+}
+```
+
+### Required Fields
+- `email` (String): The email address of the user (required).
+- `password` (String): The password for the user account (required).
+
+## Example Response
+
+### Success Response
+- **Status Code:** `200 OK`
+- **Response Body:**
+```json
+{
+    "success": true,
+    "user": {
+        "_id": "userId",
+        "fullname": {
+            "firstname": "John",
+            "lastname": "Doe"
+        },
+        "email": "john.doe@example.com",
+        "socketId": null,
+        "createdAt": "2023-10-01T00:00:00.000Z",
+        "updatedAt": "2023-10-01T00:00:00.000Z",
+        "__v": 0
+    },
+    "token": "yourJWTtoken"
+}
+```
+
+### Error Response
+- **Status Code:** `400 Bad Request` (if email or password is missing)
+- **Response Body:**
+```json
+{
+    "error": "Either Email or password is missing"
+}
+```
+
 ## Notes
 - Ensure that the email provided is unique; otherwise, the registration will fail.
 - Passwords are hashed before being stored in the database for security.

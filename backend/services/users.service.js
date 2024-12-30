@@ -23,3 +23,22 @@ export const createUser = async (firstname, lastname, email, password) => {
 
     return {user,token};
 }
+
+export const login = async (email, password) => {
+    try {
+        const user = await UserModel.findOne({email}).select("+password");
+        if(!user)
+            throw new Error(`user does not exist with this email`);
+
+        const isCorrectPassword = await user.comparePassword(password);
+
+        if(!isCorrectPassword)
+            throw new Error(`Password doesn't match the user account`)
+
+        return user;
+
+    } catch (error) {
+        console.log(`${error.message} : this error occured while loggin`);
+        throw new Error(`${error.message} : this error occured while user loggin`)
+    }
+}

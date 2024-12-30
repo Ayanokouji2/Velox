@@ -1,4 +1,4 @@
-import { createUser } from '../services/users.service.js';
+import { createUser, login } from '../services/users.service.js';
 
 export const registerUser = async (req, res) => {
 	try {
@@ -24,3 +24,28 @@ export const registerUser = async (req, res) => {
 		res.status(error.status || 500).json({ error: error.message });
 	}
 };
+
+export const loginUser = async (req, res) => {
+	try {
+		const { email, password} = req.body;
+
+		if(!email || !password){
+			throw new Error(`Either Email or password is missing`);
+		}
+
+		const loggedInUser = await login(email, password);
+
+		const token = await loggedInUser.generateAuthToken()
+
+		res.status(200).json({
+			success: true,
+			user:loggedInUser,
+			token
+		})
+		
+	} catch (error) {
+		res.status(400).json({
+			error: error.message
+		})	
+	}
+}
