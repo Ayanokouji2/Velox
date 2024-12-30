@@ -1,24 +1,26 @@
-# User Management API
+# User Registration API
 
 ## Overview
-This API provides endpoints for user registration, login, and profile management. It utilizes JSON Web Tokens (JWT) for authentication and ensures secure password storage through hashing.
+This API allows users to register by providing their details. It creates a new user in the database and returns a JSON Web Token (JWT) for authentication.
 
-## Endpoints
+## API Endpoint
 
-### User Registration
+### Register User
 - **URL:** `/api/user/register`
 - **Method:** `POST`
 - **Authentication:** None required for registration.
 
 #### Description
-Registers a new user by creating a user account in the database and issuing a JWT for authentication.
+The `/api/user/register` endpoint is used to create a new user account. Users must provide their first name, last name (optional), email, and password. Upon successful registration, the API will return a JWT that can be used for authenticating future requests.
 
-#### Request Format
+## Request Format
 
 ### Headers
 - `Content-Type: application/json`
 
 ### Body
+The request body must be a JSON object containing the following fields:
+
 ```json
 {
     "fullname": {
@@ -36,7 +38,7 @@ Registers a new user by creating a user account in the database and issuing a JW
 - `email` (String): The email address of the user (required, must be unique and valid).
 - `password` (String): The password for the user account (required).
 
-#### Response
+## Example Response
 
 ### Success Response
 - **Status Code:** `201 Created`
@@ -67,21 +69,24 @@ Registers a new user by creating a user account in the database and issuing a JW
 {
     "error": "Missing Field Firstname"
 }
+```
 
-### User Login
+## Login User
 - **URL:** `/api/user/login`
 - **Method:** `POST`
 - **Authentication:** None required for login.
 
 #### Description
-Authenticates an existing user by verifying their email and password, issuing a JWT for future requests.
+The `/api/user/login` endpoint is used to authenticate an existing user. Users must provide their email and password. Upon successful login, the API will return a JWT that can be used for authenticating future requests.
 
-#### Request Format
+### Request Format
 
 ### Headers
 - `Content-Type: application/json`
 
 ### Body
+The request body must be a JSON object containing the following fields:
+
 ```json
 {
     "email": "john.doe@example.com",
@@ -93,7 +98,7 @@ Authenticates an existing user by verifying their email and password, issuing a 
 - `email` (String): The email address of the user (required).
 - `password` (String): The password for the user account (required).
 
-#### Response
+## Example Response
 
 ### Success Response
 - **Status Code:** `200 OK`
@@ -124,24 +129,29 @@ Authenticates an existing user by verifying their email and password, issuing a 
 {
     "error": "Either Email or password is missing"
 }
+```
 
-### User Profile
+## Notes
+- Ensure that the email provided is unique; otherwise, the registration will fail.
+- Passwords are hashed before being stored in the database for security.
+
+## User Profile
 - **URL:** `/api/user/profile`
 - **Method:** `GET`
 - **Authentication:** Bearer token required.
 
 #### Description
-Retrieves the profile information of the currently logged-in user.
+The `/api/user/profile` endpoint is used to retrieve the profile information of the currently logged-in user. The user must be authenticated with a valid JWT token.
 
-#### Request Format
+### Request Format
 
 ### Headers
 - `Content-Type: application/json`
 - `Authorization: Bearer yourJWTtoken`
 
-#### Response
+### Example Response
 
-### Success Response
+#### Success Response
 - **Status Code:** `200 OK`
 - **Response Body:**
 ```json
@@ -162,7 +172,7 @@ Retrieves the profile information of the currently logged-in user.
 }
 ```
 
-### Error Response
+#### Error Response
 - **Status Code:** `401 Unauthorized` (if the user is not logged in)
 - **Response Body:**
 ```json
